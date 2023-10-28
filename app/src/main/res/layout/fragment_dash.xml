@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".Fragments.DashFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/blue_pr_bottom_radius_bg"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/barlow_regular"
+                android:text="Welcome"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/txt_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/barlow_semibold"
+                android:textColor="@color/white"
+                android:textSize="48sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:id="@+id/exam_creatfirst"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/black_ripple"
+                android:fontFamily="@font/barlow_semibold"
+                android:gravity="center"
+                android:text="Create Exam"
+                android:textColor="@color/black_pr"
+                android:textSize="24sp" />
+
+          <!--  <ProgressBar
+                android:id="@+id/dash_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="50dp"
+                android:indeterminateTint="@color/blue_pr"
+                android:visibility="visible" />-->
+
+            <ListView
+                android:id="@+id/list_exam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:clipToPadding="false"
+                android:divider="@color/transparent"
+                android:dividerHeight="10dp"
+                android:paddingBottom="20dp"
+                android:scrollbars="none"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txt_Teacher"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/black_ripple"
+                android:fontFamily="@font/barlow_semibold"
+                android:gravity="center"
+                android:text="Teacher's"
+                android:textColor="@color/black_pr"
+                android:textSize="24sp"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/student"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/black_ripple"
+                android:fontFamily="@font/barlow_semibold"
+                android:gravity="center"
+                android:text="Student's"
+                android:textColor="@color/black_pr"
+                android:textSize="24sp"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/txt_show_exam"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/black_ripple"
+                android:fontFamily="@font/barlow_semibold"
+                android:gravity="center"
+                android:text="Show Exam"
+                android:textColor="@color/black_pr"
+                android:textSize="24sp"
+                android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

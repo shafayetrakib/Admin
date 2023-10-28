@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Examiner Teacher</string>
+    <string-array name="course">
+        <item>Select Course</item>
+        <item>Android</item>
+        <item>Networking</item>
+        <item>UI/UX Design</item>
+        <item>web Design</item>
+    </string-array>
+    <string name="mess">We will send you New password Set (Link) on this mail,If you have Reset password on your account by this mail.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_your_message">Enter Your Message</string>
+</resources>

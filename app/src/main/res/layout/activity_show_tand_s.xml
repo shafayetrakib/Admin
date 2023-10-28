@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/blue_sc"
+    tools:context=".Show_TandS">
+
+    <LinearLayout
+        android:id="@+id/teacher_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/blue_pr_bottom_radius_bg"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/barlow_semibold"
+            android:gravity="center"
+            android:text="Teacher's List"
+            android:textColor="@color/white"
+            android:textSize="38sp" />
+
+        <TextView
+            android:id="@+id/txt_select_course_teacher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/white_btn_bg"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Select Course"
+            android:textSize="20sp" />
+
+       <!-- <TextView
+            android:id="@+id/txt_select_exam_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/white_btn_bg"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Select Exam"
+            android:textSize="20sp" />-->
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/txt_course_exam_ins"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Please Select Teacher's Course"
+        android:textColor="@color/black_sc"
+        android:textSize="18sp"
+        android:visibility="visible" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/student_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/blue_pr_bottom_radius_bg"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/barlow_semibold"
+                android:gravity="center"
+                android:text="Teacher's List"
+                android:textColor="@color/white"
+                android:textSize="38sp" />
+
+            <TextView
+                android:id="@+id/txt_select_course_student"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/white_btn_bg"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Select Course"
+                android:textSize="20sp" />
+
+            <!-- <TextView
+                 android:id="@+id/txt_select_exam_result"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginTop="10dp"
+                 android:background="@drawable/white_btn_bg"
+                 android:gravity="center"
+                 android:padding="10dp"
+                 android:text="Select Exam"
+                 android:textSize="20sp" />-->
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/txt_course_exam_student"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Please Select Student's Course"
+            android:textColor="@color/black_sc"
+            android:textSize="18sp"
+            android:visibility="visible" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

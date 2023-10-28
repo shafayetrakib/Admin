@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Bottom Dialog Main Theme -->
+    <style name="bottom_sheet_dialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottom_sheet_dialog_theme</item>
+    </style>
+    <style name="bottom_sheet_dialog_theme" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@color/transparent</item>
+    </style>
+
+    <style name="custom_date_time_picker_style" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/blue_pr</item>
+        <item name="android:textColorPrimary">@color/black_pr</item>
+    </style>
+
+    <style name="edt_txt_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/barlow_regular</item>
+        <item name="android:textColor">@color/black_pr</item>
+        <item name="android:textColorHint">@color/black_sc</item>
+        <item name="android:background">@color/transparent</item>
+    </style>
+    <style name="edt_icon_style">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginStart">18dp</item>
+    </style>
+
+</resources>

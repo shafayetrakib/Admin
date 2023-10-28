@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/profile"
+        android:title="profile"
+        android:icon="@drawable/ic_user"/>
+
+    <item android:id="@+id/dashboard"
+        android:title="Dashboard"
+        android:icon="@drawable/ic_dashboard"/>
+
+    <item android:id="@+id/result"
+        android:title="Result"
+        android:icon="@drawable/ic_result"
+       />
+    <item android:id="@+id/resource"
+        android:title="Resource"
+        android:icon="@drawable/ic_resource"
+        />
+</menu>
