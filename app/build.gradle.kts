@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.itbd.examnierteacher"
+    namespace = "com.itbd.examineradmin"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.itbd.examnierteacher"
+        applicationId = "com.itbd.examineradmin"
         minSdk = 24
         targetSdk = 33
         versionCode = 1

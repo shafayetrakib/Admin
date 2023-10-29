@@ -8,6 +8,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:251470812952:android:45b5f4fe395c7bfb32706d",
+        "android_client_info": {
+          "package_name": "com.itbd.examineradmin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkgf5Wigs0LNmdReaSPoUi8xktY4JouuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:251470812952:android:ec4bcfaa358751aa32706d",
         "android_client_info": {
           "package_name": "com.itbd.examnierteacher"

@@ -47,7 +47,7 @@
         android:dividerHeight="10dp"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:scrollbars="none"
+        android:scrollbarThumbHorizontal="@color/transparent"
         android:stackFromBottom="true"
         android:visibility="gone" />
 
