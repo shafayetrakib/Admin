@@ -1,6 +1,9 @@
 package com.itbd.examineradmin.Fragments;
 
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -11,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,12 +25,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.itbd.examineradmin.Adapter.CustomAdapter;
+import com.itbd.examineradmin.DataMoldes.CourseDataModel;
 import com.itbd.examineradmin.DataMoldes.ResourceDataModel;
+import com.itbd.examineradmin.MainActivity;
 import com.itbd.examineradmin.R;
 
 import java.text.ParseException;
@@ -35,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.TimeZone;
 
 
@@ -42,30 +52,26 @@ public class ResourceFragment extends Fragment {
 
     private static final String U_NAME = "arg1";
     private static final String U_ID = "arg2";
-    private static final String U_COURSE = "arg3";
-
-    List<ResourceDataModel> courseResourceDataModelList = new ArrayList<>();
-    List<ResourceDataModel> allCourseResourceDataModelList = new ArrayList<>();
     List<ResourceDataModel> resourceDataModelList = new ArrayList<>();
-    String allCourse = "All";
+    List<CourseDataModel> courseListData = new ArrayList<>();
 
-    String userID, userName, userCourse;
+    String userID, userName, resCourse = "";
 
-    ProgressBar resProgressBar;
-    ListView resList;
+    ProgressBar resProgressBar, dialogProgressBar;
+    ListView resList, listCourse;
+    EditText edtMsg;
 
     public ResourceFragment() {
         // Required empty public constructor
     }
 
-    public static ResourceFragment getInstance(String uId, String uName, String uCourse) {
+    public static ResourceFragment getInstance(String uId, String uName) {
         ResourceFragment resourceFragment = new ResourceFragment();
 
         Bundle bundle = new Bundle();
 
         bundle.putString(U_ID, uId);
         bundle.putString(U_NAME, uName);
-        bundle.putString(U_COURSE, uCourse);
 
         resourceFragment.setArguments(bundle);
 
@@ -79,26 +85,39 @@ public class ResourceFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_resource, container, false);
 
-        EditText edtMsg = view.findViewById(R.id.edt_msg);
+        edtMsg = view.findViewById(R.id.edt_msg);
+
         ImageView imgBtnMsgSend = view.findViewById(R.id.img_btn_msg_send);
+        ImageView imgBtnSelectCourse = view.findViewById(R.id.img_btn_select_course);
+
         resProgressBar = view.findViewById(R.id.res_progress_bar);
 
         if (getArguments() != null) {
             userID = getArguments().getString(U_ID);
             userName = getArguments().getString(U_NAME);
-            userCourse = getArguments().getString(U_COURSE);
         }
 
         resList = view.findViewById(R.id.res_list);
-        loadRes(resList, userCourse);
+        loadRes(resList);
+
+        imgBtnSelectCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCourseDialog();
+            }
+        });
 
         imgBtnMsgSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String message = edtMsg.getText().toString().trim();
                 String date = getPresentDate();
                 String time = getPresentTime();
+
+                if (resCourse.isEmpty()) {
+                    Toast.makeText(requireActivity(), "Please select course", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (message.isEmpty()) {
                     return;
@@ -107,13 +126,63 @@ public class ResourceFragment extends Fragment {
                 String msgKey = mReference.push().getKey();
                 assert msgKey != null;
                 mReference.child("resource").child(msgKey).setValue(new ResourceDataModel(message, date, time,
-                        userName, userCourse, msgKey));
+                        userName, resCourse, msgKey));
 
                 edtMsg.setText("");
             }
         });
 
         return view;
+    }
+
+    // Showing bottom dialog of course list
+    private void showCourseDialog() {
+        BottomSheetDialog courseSelectDialog = new BottomSheetDialog(requireActivity(), R.style.bottom_sheet_dialog);
+        Objects.requireNonNull(courseSelectDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        courseSelectDialog.getBehavior().setSkipCollapsed(true);
+        courseSelectDialog.getBehavior().setState(STATE_EXPANDED);
+        courseSelectDialog.setContentView(R.layout.bottom_dialog_course_select);
+
+        dialogProgressBar = courseSelectDialog.findViewById(R.id.progress_bar);
+        listCourse = courseSelectDialog.findViewById(R.id.course_list);
+
+        loadCourseList(listCourse);
+
+        listCourse.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                edtMsg.setHint(courseListData.get(i).getCourseName());
+                resCourse = courseListData.get(i).getCourseName();
+
+                courseSelectDialog.dismiss();
+            }
+        });
+        courseSelectDialog.show();
+    }
+
+    // Load course list with (all) value
+    private void loadCourseList(ListView listView) {
+        mReference
+                .child("courseList")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        courseListData.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            courseListData.add(dataSnapshot.getValue(CourseDataModel.class));
+                        }
+                        dialogProgressBar.setVisibility(View.GONE);
+
+                        CustomAdapter courseListAdapter = new CustomAdapter(requireActivity(), courseListData.size(), R.layout.list_item_course);
+                        courseListAdapter.setCourseList(courseListData);
+                        listView.setAdapter(courseListAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(requireActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private String getPresentDate() {
@@ -129,43 +198,20 @@ public class ResourceFragment extends Fragment {
         return sTimeFormat.format(new Date());
     }
 
-    private void loadRes(ListView listView, String specificCourse) {
+    private void loadRes(ListView listView) {
         mReference = FirebaseDatabase.getInstance().getReference();
 
         mReference.child("resource")
-                .orderByChild("course")
-                .equalTo(allCourse)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        allCourseResourceDataModelList.clear();
+                        resourceDataModelList.clear();
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ResourceDataModel resourceDataModel = dataSnapshot.getValue(ResourceDataModel.class);
 
-                            allCourseResourceDataModelList.add(resourceDataModel);
+                            resourceDataModelList.add(resourceDataModel);
                         }
-                        mergeList(listView);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(requireActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        mReference.child("resource")
-                .orderByChild("course")
-                .equalTo(specificCourse)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        courseResourceDataModelList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            ResourceDataModel resourceDataModel = dataSnapshot.getValue(ResourceDataModel.class);
-
-                            courseResourceDataModelList.add(resourceDataModel);
-                        }
-                        mergeList(listView);
+                        showDataToListView(listView);
                     }
 
                     @Override
@@ -175,11 +221,7 @@ public class ResourceFragment extends Fragment {
                 });
     }
 
-    private void mergeList(ListView listView) {
-        resourceDataModelList.clear();
-        resourceDataModelList.addAll(courseResourceDataModelList);
-        resourceDataModelList.addAll(allCourseResourceDataModelList);
-
+    private void showDataToListView(ListView listView) {
         // Comparing based on date and time
         resourceDataModelList.sort(new Comparator<ResourceDataModel>() {
             @RequiresApi(api = Build.VERSION_CODES.O)

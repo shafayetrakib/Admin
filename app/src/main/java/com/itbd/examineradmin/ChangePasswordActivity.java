@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ChangePasswordActivity extends AppCompatActivity {
     EditText changePassword;
-    ImageView visiable;
+    ImageView visible;
     Button saveChange;
     private FirebaseAuth mAuth;
 
@@ -30,47 +30,46 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_changepassword);
 
-        changePassword= findViewById(R.id.changepassword);
-        saveChange=findViewById(R.id.savechangetwo);
-        visiable=findViewById(R.id.Newpass_invisiable);
+        changePassword = findViewById(R.id.changepassword);
+        saveChange = findViewById(R.id.savechangetwo);
+        visible = findViewById(R.id.Newpass_invisiable);
 
-        getWindow().setStatusBarColor(ContextCompat.getColor(ChangePasswordActivity.this,R.color.blue_pr));
+        getWindow().setStatusBarColor(ContextCompat.getColor(ChangePasswordActivity.this, R.color.blue_pr));
 
         mAuth = FirebaseAuth.getInstance();
 
-        //visibilty button
-
-        visiable.setOnClickListener(new View.OnClickListener() {
+        //Visibility button
+        visible.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(changePassword.getTransformationMethod().equals(HideReturnsTransformationMethod.getInstance())){
+                if (changePassword.getTransformationMethod().equals(HideReturnsTransformationMethod.getInstance())) {
                     changePassword.setTransformationMethod(new PasswordTransformationMethod());
-                    visiable.setImageResource(R.drawable.invisi_eye);
-                }else {
+                    visible.setImageResource(R.drawable.invisi_eye);
+                } else {
                     changePassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    visiable.setImageResource(R.drawable.visi_eye);
+                    visible.setImageResource(R.drawable.visi_eye);
                 }
             }
         });
-
-
 
         saveChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 String Changepassword = changePassword.getText().toString().trim();
-                if(Changepassword.isEmpty()){
+                if (Changepassword.isEmpty()) {
                     changePassword.setError("Enter a Password");
                     changePassword.requestFocus();
                     return;
                 }
-                if (Changepassword.length()>8){
+                if (Changepassword.length() > 8) {
                     changePassword.setError("Password must be 8 characters");
                     changePassword.requestFocus();
                     return;
                 }
                 FirebaseUser user = mAuth.getCurrentUser();
+
+                assert user != null;
                 user.updatePassword(Changepassword).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {

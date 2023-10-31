@@ -13,9 +13,10 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.itbd.examineradmin.Adapter.CustomAdapter;
+import com.itbd.examineradmin.DataMoldes.AdminDataModel;
 import com.itbd.examineradmin.DataMoldes.DashButtonModel;
 
-import com.itbd.examineradmin.DataMoldes.TeacherDataModel;
+import com.itbd.examineradmin.DataMoldes.AdminDataModel;
 import com.itbd.examineradmin.ExamSetActivity;
 import com.itbd.examineradmin.MainActivity;
 import com.itbd.examineradmin.R;
@@ -28,7 +29,7 @@ public class DashFragment extends Fragment {
     private static final String U_DATA = "arg1";
     TextView txtUserName, btnExamCreate;
     GridView gridViewBtnList;
-    TeacherDataModel teacherDataModelData;
+    AdminDataModel adminDataModelData;
 
     List<DashButtonModel> dashButtonModelList = new ArrayList<>();
 
@@ -36,7 +37,7 @@ public class DashFragment extends Fragment {
 
     }
 
-    public static DashFragment getInstance(TeacherDataModel userData) {
+    public static DashFragment getInstance(AdminDataModel userData) {
         DashFragment dashFragment = new DashFragment();
         Bundle bundle = new Bundle();
 
@@ -52,21 +53,20 @@ public class DashFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dash, container, false);
 
         if (getArguments() != null) {
-            teacherDataModelData = (TeacherDataModel) getArguments().getSerializable(U_DATA);
+            adminDataModelData = (AdminDataModel) getArguments().getSerializable(U_DATA);
         }
 
         txtUserName = view.findViewById(R.id.txt_user_name);
         btnExamCreate = view.findViewById(R.id.exam_creatfirst);
         gridViewBtnList = view.findViewById(R.id.grid_view_btn_list);
 
-        txtUserName.setText(teacherDataModelData.getFullName());
+        txtUserName.setText(adminDataModelData.getName());
 
         btnExamCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent goExamSet = new Intent(requireActivity(), ExamSetActivity.class);
                 goExamSet.putExtra("identifyIntent", 1);
-                goExamSet.putExtra("userCourse", teacherDataModelData.getCourse());
                 startActivity(goExamSet);
             }
         });

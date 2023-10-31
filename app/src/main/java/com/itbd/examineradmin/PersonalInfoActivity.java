@@ -12,12 +12,12 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.itbd.examineradmin.DataMoldes.TeacherDataModel;
+import com.itbd.examineradmin.DataMoldes.AdminDataModel;
 
 public class PersonalInfoActivity extends AppCompatActivity {
     EditText fullName, email, phone, course;
     Button saveInfo;
-    TeacherDataModel teacherDataModelData;
+    AdminDataModel adminDataModelData;
     DatabaseReference mRef;
 
     @Override
@@ -27,7 +27,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         getWindow().setStatusBarColor(ContextCompat.getColor(PersonalInfoActivity.this, R.color.blue_pr));
 
-        teacherDataModelData = (TeacherDataModel) getIntent().getSerializableExtra("uData");
+        adminDataModelData = (AdminDataModel) getIntent().getSerializableExtra("uData");
 
         mRef = FirebaseDatabase.getInstance().getReference();
 
@@ -35,15 +35,16 @@ public class PersonalInfoActivity extends AppCompatActivity {
         email = findViewById(R.id.edit_email);
         phone = findViewById(R.id.edit_phone);
         course = findViewById(R.id.edit_course);
+
         saveInfo = findViewById(R.id.btn_saveinfo);
 
         email.setEnabled(false);
         course.setEnabled(false);
 
-        fullName.setText(teacherDataModelData.getFullName());
-        email.setText(teacherDataModelData.getEmail());
-        phone.setText(teacherDataModelData.getPhone());
-        course.setText(teacherDataModelData.getCourse());
+        fullName.setText(adminDataModelData.getName());
+        email.setText(adminDataModelData.getEmail());
+        phone.setText(adminDataModelData.getPhone());
+        course.setText("Admin");
 
         saveInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,8 +72,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
             return;
         }
 
-        mRef.child("Teacher").child(teacherDataModelData.getuId()).setValue(new TeacherDataModel(FullName, teacherDataModelData.getPosition(),
-                teacherDataModelData.getEmail(), Phone, teacherDataModelData.getCourse(), teacherDataModelData.getuId()));
+        mRef.child("Admin").child(adminDataModelData.getUserId()).setValue(new AdminDataModel(FullName, adminDataModelData.getEmail(),
+                Phone, adminDataModelData.getUserId()));
 
         Toast.makeText(PersonalInfoActivity.this, "Information Updated Successfully", Toast.LENGTH_SHORT).show();
     }

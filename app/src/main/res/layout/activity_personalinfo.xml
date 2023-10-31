@@ -47,6 +47,19 @@
             android:textSize="20sp" />
 
         <EditText
+            android:id="@+id/edit_course"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/edt_bg_sc"
+            android:clickable="false"
+            android:fontFamily="@font/barlow_regular"
+            android:inputType="text"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/black_pr"
+            android:textSize="20sp" />
+
+        <EditText
             android:id="@+id/edit_email"
             android:layout_width="match_parent"
             android:layout_height="58dp"
@@ -68,19 +81,6 @@
             android:fontFamily="@font/barlow_regular"
             android:hint="Enter your phone number"
             android:inputType="phone"
-            android:paddingHorizontal="20dp"
-            android:textColor="@color/black_pr"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/edit_course"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/edt_bg_sc"
-            android:clickable="false"
-            android:fontFamily="@font/barlow_regular"
-            android:inputType="text"
             android:paddingHorizontal="20dp"
             android:textColor="@color/black_pr"
             android:textSize="20sp" />

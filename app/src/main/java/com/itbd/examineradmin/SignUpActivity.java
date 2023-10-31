@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.itbd.examineradmin.DataMoldes.AdminDataModel;
 import com.itbd.examineradmin.DataMoldes.TeacherDataModel;
 
 import java.util.ArrayList;
@@ -49,15 +50,9 @@ public class SignUpActivity extends AppCompatActivity {
     TextView backTwo, signInText;
     Button signUp;
     ImageView visibilitySignUp;
-    ProgressBar progressBar;
 
     DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
-
-    // Variable for Course List
-    private DatabaseReference mReference;
-    List<String> courseListData = new ArrayList<>();
-    TextView txtSelectCourse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         getWindow().setStatusBarColor(ContextCompat.getColor(SignUpActivity.this, R.color.blue_pr));
 
-        mReference = FirebaseDatabase.getInstance().getReference();
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("Teacher");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Admin");
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -101,40 +94,6 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onBackPressed();
-            }
-        });
-
-        loadCourseList();
-
-        // Making The Dialog
-        BottomSheetDialog courseSelectDialog = new BottomSheetDialog(this, R.style.bottom_sheet_dialog);
-        Objects.requireNonNull(courseSelectDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        courseSelectDialog.getBehavior().setSkipCollapsed(true);
-        courseSelectDialog.getBehavior().setState(STATE_EXPANDED);
-        courseSelectDialog.setContentView(R.layout.bottom_dialog_course_select);
-
-        RelativeLayout courseSelectorLayout = findViewById(R.id.course_selector_layout);
-        txtSelectCourse = findViewById(R.id.txt_select_course);
-        courseSelectorLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                courseSelectDialog.show();
-            }
-        });
-
-        // Making The List of Course
-        ListView courseList = courseSelectDialog.findViewById(R.id.course_list);
-        progressBar = courseSelectDialog.findViewById(R.id.progress_bar);
-        assert courseList != null;
-        courseList.setAdapter(new ArrayAdapter<>(SignUpActivity.this,
-                R.layout.list_item_course,
-                R.id.txt_list_item, courseListData));
-
-        courseList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                txtSelectCourse.setText(courseListData.get(i));
-                courseSelectDialog.dismiss();
             }
         });
 
@@ -210,7 +169,6 @@ public class SignUpActivity extends AppCompatActivity {
         String FullName = fullName.getText().toString().trim();
         String Email = email.getText().toString().trim();
         String Phone = phone.getText().toString().trim();
-        String Course = txtSelectCourse.getText().toString().trim();
 
         if (TextUtils.isEmpty(FullName)) {
             fullName.setError("Full name is required");
@@ -228,7 +186,7 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        TeacherDataModel info = new TeacherDataModel(FullName, null, Email, Phone, Course, uId);
+        AdminDataModel info = new AdminDataModel(FullName, Email, Phone, uId);
         databaseReference.child(uId).setValue(info).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -251,26 +209,6 @@ public class SignUpActivity extends AppCompatActivity {
             sb.append(c);
         }
         return sb.toString();
-    }
-
-    private void loadCourseList() {
-        mReference.child("courseList").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                courseListData.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    courseListData.add(dataSnapshot.getValue(String.class));
-                }
-                courseListData.remove("All");
-                progressBar.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(SignUpActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 }

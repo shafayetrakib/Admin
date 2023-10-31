@@ -18,8 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bottomnavigation"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         app:itemIconTint="@drawable/navigation_item_color"
         app:itemTextColor="@drawable/navigation_item_color"
         app:menu="@menu/bottom_menu" />

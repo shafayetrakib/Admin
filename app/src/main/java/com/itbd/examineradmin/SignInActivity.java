@@ -101,16 +101,11 @@ public class SignInActivity extends AppCompatActivity {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //start rememberMe
-                String Mail = emailSignin.getText().toString().trim();
-                String signinpassword = passwordSignin.getText().toString().trim();
-
                 if (rememberMe.isChecked()) {
                     editor.putBoolean("userCheck", true);
                 }
 
                 //End of remember Me
-
                 String email = emailSignin.getText().toString().trim();
                 String password = passwordSignin.getText().toString().trim();
 
@@ -155,7 +150,7 @@ public class SignInActivity extends AppCompatActivity {
                             finish();
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "SignIn Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Sign In Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

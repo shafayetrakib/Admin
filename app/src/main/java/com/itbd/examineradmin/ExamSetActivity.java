@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -26,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -35,8 +37,13 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.itbd.examineradmin.Adapter.CustomAdapter;
+import com.itbd.examineradmin.DataMoldes.CourseDataModel;
 import com.itbd.examineradmin.DataMoldes.ExamDataModel;
 import com.itbd.examineradmin.DataMoldes.QuestionModel;
 
@@ -48,14 +55,17 @@ import java.util.Objects;
 
 public class ExamSetActivity extends AppCompatActivity {
     Button btnAddQuestion, btnExamSave;
-    TextView examSetUpDate, examSetUpTime;
+    TextView examSetUpDate, examSetUpTime, examSetUpCourse;
     EditText examSetUpName, examSetUpSyllabus, examSetUpMark, examSetUpDuration;
+    ProgressBar dialogProgressBar;
+    ListView listCourse;
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
     DatabaseReference mReference;
-    String userCourse, examName, examSyllabus, examTime, totalMarks, examDate, duration;
+    String examName, examSyllabus, examCourse, examTime, totalMarks, examDate, duration;
     boolean isQuestionAdded = false, isDataValidate = false;
     List<QuestionModel> questionModelList = new ArrayList<>();
+    List<CourseDataModel> courseListData = new ArrayList<>();
     ExamDataModel examDataModel;
     BaseAdapter listShowQuestionAdapter;
 
@@ -75,6 +85,7 @@ public class ExamSetActivity extends AppCompatActivity {
 
         examSetUpName = findViewById(R.id.edt_exam_name);
         examSetUpSyllabus = findViewById(R.id.edt_exam_syllabus);
+        examSetUpCourse = findViewById(R.id.txt_exam_course);
         examSetUpDate = findViewById(R.id.edt_exam_date);
         examSetUpTime = findViewById(R.id.edt_exam_time);
         examSetUpMark = findViewById(R.id.edt_exam_mark);
@@ -82,16 +93,14 @@ public class ExamSetActivity extends AppCompatActivity {
 
         if (identifyIntent == 1) {
             // identifyIntent = 1, ExamSetActivity Open from create exam button
-            userCourse = getIntent().getStringExtra("userCourse");
         } else if (identifyIntent == 2) {
             // identifyIntent = 2, ExamSetActivity Open from edit exam button
             examDataModel = (ExamDataModel) getIntent().getSerializableExtra("examData");
 
             assert examDataModel != null;
-            userCourse = examDataModel.getCourse();
-
             examSetUpName.setText(examDataModel.getExamName());
             examSetUpSyllabus.setText(examDataModel.getExamSyllabus());
+            examSetUpCourse.setText(examDataModel.getCourse());
             examSetUpDate.setText(examDataModel.getExamDate());
             examSetUpTime.setText(examDataModel.getExamTime());
             examSetUpMark.setText(examDataModel.getTotalMarks());
@@ -109,13 +118,13 @@ public class ExamSetActivity extends AppCompatActivity {
             assert examDataModel != null;
             examSetUpName.setText(examDataModel.getExamName());
             examSetUpSyllabus.setText(examDataModel.getExamSyllabus());
+            examSetUpCourse.setText(examDataModel.getCourse());
             examSetUpDate.setText(examDataModel.getExamDate());
             examSetUpTime.setText(examDataModel.getExamTime());
             examSetUpMark.setText(examDataModel.getTotalMarks());
             examSetUpDuration.setText(examDataModel.getDuration());
 
             questionModelList = examDataModel.getQuestionModelList();
-            userCourse = examDataModel.getCourse();
 
             btnAddQuestion.setText("Show Question");
         }
@@ -167,6 +176,14 @@ public class ExamSetActivity extends AppCompatActivity {
             }
         });
 
+        // Select Course for exam
+        examSetUpCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCourseDialog();
+            }
+        });
+
         btnAddQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -176,7 +193,7 @@ public class ExamSetActivity extends AppCompatActivity {
                         Intent goQuestionActivity = new Intent(ExamSetActivity.this, QuestionSetActivity.class);
 
                         ExamDataModel newEdm = new ExamDataModel();
-                        newEdm.setCourse(userCourse);
+                        newEdm.setCourse(examCourse);
                         newEdm.setExamName(examName);
                         newEdm.setExamSyllabus(examSyllabus);
                         newEdm.setExamDate(examDate);
@@ -311,7 +328,7 @@ public class ExamSetActivity extends AppCompatActivity {
                 } else if (identifyIntent == 3) {
                     String key = mReference.push().getKey();
 
-                    examDataModel.setCourse(userCourse);
+                    examDataModel.setCourse(examCourse);
 
                     examDataModel.setExamId(key);
 
@@ -575,6 +592,7 @@ public class ExamSetActivity extends AppCompatActivity {
     public void examDataValidator() {
         examName = examSetUpName.getText().toString().trim();
         examSyllabus = examSetUpSyllabus.getText().toString().trim();
+        examCourse = examSetUpCourse.getText().toString().trim();
         examDate = examSetUpDate.getText().toString().trim();
         examTime = examSetUpTime.getText().toString().trim();
         totalMarks = examSetUpMark.getText().toString().trim();
@@ -586,6 +604,11 @@ public class ExamSetActivity extends AppCompatActivity {
         }
         if (examSyllabus.isEmpty()) {
             edtValidator(examSetUpSyllabus, "Please, Enter Syllabus");
+            return;
+        }
+        if (examCourse.isEmpty()) {
+            examSetUpCourse.setError("Please, Enter Course");
+            examSetUpCourse.requestFocus();
             return;
         }
         if (examDate.isEmpty()) {
@@ -602,7 +625,7 @@ public class ExamSetActivity extends AppCompatActivity {
             edtValidator(examSetUpMark, "Please, Enter Marks");
             return;
         }
-        if (Integer.parseInt(totalMarks) < 15){
+        if (Integer.parseInt(totalMarks) < 15) {
             edtValidator(examSetUpMark, "Marks can't be smaller that 15");
             return;
         }
@@ -617,5 +640,53 @@ public class ExamSetActivity extends AppCompatActivity {
     private void edtValidator(EditText editText, String message) {
         editText.setError(message);
         editText.requestFocus();
+    }
+
+    private void showCourseDialog() {
+        BottomSheetDialog courseSelectDialog = new BottomSheetDialog(ExamSetActivity.this, R.style.bottom_sheet_dialog);
+        Objects.requireNonNull(courseSelectDialog.getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        courseSelectDialog.getBehavior().setSkipCollapsed(true);
+        courseSelectDialog.getBehavior().setState(STATE_EXPANDED);
+        courseSelectDialog.setContentView(R.layout.bottom_dialog_course_select);
+
+        dialogProgressBar = courseSelectDialog.findViewById(R.id.progress_bar);
+        listCourse = courseSelectDialog.findViewById(R.id.course_list);
+        loadCourseList(listCourse);
+
+        listCourse.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                examSetUpCourse.setText(courseListData.get(i).getCourseName());
+
+                courseSelectDialog.dismiss();
+            }
+        });
+        courseSelectDialog.show();
+    }
+
+    private void loadCourseList(ListView listView) {
+        mReference
+                .child("courseList")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        courseListData.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            courseListData.add(dataSnapshot.getValue(CourseDataModel.class));
+                        }
+
+                        courseListData.removeIf(CourseDataModel -> CourseDataModel.getCourseName().equals("All"));
+                        dialogProgressBar.setVisibility(View.GONE);
+
+                        CustomAdapter courseListAdapter = new CustomAdapter(ExamSetActivity.this, courseListData.size(), R.layout.list_item_course);
+                        courseListAdapter.setCourseList(courseListData);
+                        listView.setAdapter(courseListAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(ExamSetActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.itbd.examineradmin.DataMoldes.AdminDataModel;
 import com.itbd.examineradmin.DataMoldes.TeacherDataModel;
 import com.itbd.examineradmin.Fragments.DashFragment;
 import com.itbd.examineradmin.Fragments.ProfileFragment;
@@ -31,10 +32,10 @@ import com.itbd.examineradmin.Fragments.ResultFragment;
 import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity {
-    private static final String PREF_NAME = "ExaminerTeacher";
+    private static final String PREF_NAME = "ExaminerAdmin";
     BottomNavigationView bottomNav;
-    TeacherDataModel teacherDataModelData;
-    String uID, uName, uCourse;
+    AdminDataModel adminDataModel;
+    String uID, uName;
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     SharedPreferences sharedPreferences;
 
@@ -68,13 +69,13 @@ public class DashboardActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 if (item.getItemId() == R.id.profile) {
-                    loadFrag(ProfileFragment.getInstance(teacherDataModelData), 1);
+                    loadFrag(ProfileFragment.getInstance(adminDataModel), 1);
                 } else if (item.getItemId() == R.id.dashboard) {
-                    loadFrag(DashFragment.getInstance(teacherDataModelData), 1);
+                    loadFrag(DashFragment.getInstance(adminDataModel), 1);
                 } else if (item.getItemId() == R.id.result) {
                     loadFrag(new ResultFragment(), 1);
                 } else if (item.getItemId() == R.id.resource) {
-                    loadFrag(ResourceFragment.getInstance(uID, uName, uCourse), 1);
+                    loadFrag(ResourceFragment.getInstance(uID, uName), 1);
                 }
 
                 return true;
@@ -97,16 +98,15 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void loadUserData() {
-        databaseReference.child("Teacher").child(uID).addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Admin").child(uID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                teacherDataModelData = snapshot.getValue(TeacherDataModel.class);
+                adminDataModel = snapshot.getValue(AdminDataModel.class);
 
-                assert teacherDataModelData != null;
-                uName = teacherDataModelData.getFullName();
-                uCourse = teacherDataModelData.getCourse();
+                assert adminDataModel != null;
+                uName = adminDataModel.getName();
 
-                loadFrag(DashFragment.getInstance(teacherDataModelData), 0);
+                loadFrag(DashFragment.getInstance(adminDataModel), 0);
                 loadingDialog.dismiss();
             }
 

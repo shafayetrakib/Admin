@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/barlow_regular"
-            android:text="Teacher"
+            android:text="Admin"
             android:textColor="@color/black_sc"
             android:textSize="18sp" />
 

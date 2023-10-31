@@ -29,7 +29,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.itbd.examineradmin.Adapter.CustomAdapter;
+import com.itbd.examineradmin.DataMoldes.CourseDataModel;
 import com.itbd.examineradmin.DataMoldes.ExamResultModel;
+import com.itbd.examineradmin.MainActivity;
 import com.itbd.examineradmin.R;
 
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class ResultFragment extends Fragment {
     ListView courseList, examList, resultList;
     ProgressBar progressBar;
     DatabaseReference mReference = FirebaseDatabase.getInstance().getReference();
-    List<String> courseListData = new ArrayList<>();
+    List<CourseDataModel> courseListData = new ArrayList<>();
     List<String> examListData = new ArrayList<>();
     List<ExamResultModel> examResultModelList = new ArrayList<>();
 
@@ -105,7 +107,7 @@ public class ResultFragment extends Fragment {
         courseList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                txtSelectCourse.setText(courseListData.get(i));
+                txtSelectCourse.setText(courseListData.get(i).getCourseName());
 
                 courseSelectDialog.dismiss();
             }
@@ -114,26 +116,30 @@ public class ResultFragment extends Fragment {
     }
 
     private void loadCourseList(ListView listView) {
-        mReference.child("courseList").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                courseListData.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    courseListData.add(dataSnapshot.getValue(String.class));
-                }
-                courseListData.remove("All");
-                progressBar.setVisibility(View.GONE);
+        mReference
+                .child("courseList")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        courseListData.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            courseListData.add(dataSnapshot.getValue(CourseDataModel.class));
+                        }
 
-                listView.setAdapter(new ArrayAdapter<>(requireActivity(),
-                        R.layout.list_item_course,
-                        R.id.txt_list_item, courseListData));
-            }
+                        courseListData.removeIf(CourseDataModel -> CourseDataModel.getCourseName().equals("All"));
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(requireActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                        progressBar.setVisibility(View.GONE);
+
+                        CustomAdapter courseListAdapter = new CustomAdapter(requireActivity(), courseListData.size(), R.layout.list_item_course);
+                        courseListAdapter.setCourseList(courseListData);
+                        listView.setAdapter(courseListAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(requireActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @SuppressLint("SetTextI18n")
