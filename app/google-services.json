@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "251470812952",
-    "firebase_url": "https://examiner-38dff-default-rtdb.firebaseio.com",
-    "project_id": "examiner-38dff",
-    "storage_bucket": "examiner-38dff.appspot.com"
+    "project_number": "376134355134",
+    "firebase_url": "https://examiner-76784-default-rtdb.firebaseio.com",
+    "project_id": "examiner-76784",
+    "storage_bucket": "examiner-76784.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:251470812952:android:45b5f4fe395c7bfb32706d",
+        "mobilesdk_app_id": "1:376134355134:android:a76ef5bd45b3bff87276ef",
         "android_client_info": {
           "package_name": "com.itbd.examineradmin"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBkgf5Wigs0LNmdReaSPoUi8xktY4JouuY"
+          "current_key": "AIzaSyADzvYPrwFjDvQkAh5qEu5Qd1FSHlVvNrI"
         }
       ],
       "services": {
@@ -27,26 +27,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:251470812952:android:ec4bcfaa358751aa32706d",
-        "android_client_info": {
-          "package_name": "com.itbd.examnierteacher"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBkgf5Wigs0LNmdReaSPoUi8xktY4JouuY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:251470812952:android:4c570b9252bbfcc332706d",
+        "mobilesdk_app_id": "1:376134355134:android:5db65eea43e34e6e7276ef",
         "android_client_info": {
           "package_name": "com.shariarunix.examiner"
         }
@@ -54,7 +35,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBkgf5Wigs0LNmdReaSPoUi8xktY4JouuY"
+          "current_key": "AIzaSyADzvYPrwFjDvQkAh5qEu5Qd1FSHlVvNrI"
         }
       ],
       "services": {

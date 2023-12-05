@@ -128,22 +128,18 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             String courseKey = databaseReference.push().getKey();
-                            databaseReference
-                                    .child("courseList")
-                                    .child(courseKey)
-                                    .setValue(new CourseDataModel(courseName, courseKey))
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(MainActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-                                                addCourseDialog.dismiss();
-                                            } else {
-                                                Toast.makeText(MainActivity.this, "" + task.getException().toString(), Toast.LENGTH_SHORT).show();
-                                                addCourseDialog.dismiss();
-                                            }
-                                        }
-                                    });
+                            databaseReference.child("courseList").child(courseKey).setValue(new CourseDataModel(courseName, courseKey)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(MainActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                                        addCourseDialog.dismiss();
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "" + task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                        addCourseDialog.dismiss();
+                                    }
+                                }
+                            });
                         }
                     });
                 }
@@ -161,126 +157,114 @@ public class MainActivity extends AppCompatActivity {
 
     // Load courses for adding and delete
     private void loadCourse() {
-        databaseReference
-                .child("courseList")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        courseListData.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            courseListData.add(dataSnapshot.getValue(CourseDataModel.class));
-                        }
+        databaseReference.child("courseList").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                courseListData.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    courseListData.add(dataSnapshot.getValue(CourseDataModel.class));
+                }
 
-                        courseListData.removeIf(courseDataModel -> courseDataModel.getCourseName().equals("All"));
+                courseListData.removeIf(courseDataModel -> courseDataModel.getCourseName().equals("All"));
 
-                        mainProgressBar.setVisibility(View.GONE);
-                        listMainActivity.setVisibility(View.VISIBLE);
-                        listMainActivity.setDividerHeight(15);
+                mainProgressBar.setVisibility(View.GONE);
+                listMainActivity.setVisibility(View.VISIBLE);
+                listMainActivity.setDividerHeight(15);
 
-                        CustomAdapter courseListAdapter = new CustomAdapter(MainActivity.this, courseListData.size(), R.layout.item_list_course_delete);
-                        courseListAdapter.setCourseList(courseListData);
+                CustomAdapter courseListAdapter = new CustomAdapter(MainActivity.this, courseListData.size(), R.layout.item_list_course_delete);
+                courseListAdapter.setCourseList(courseListData);
 
-                        listMainActivity.setAdapter(courseListAdapter);
-                    }
+                listMainActivity.setAdapter(courseListAdapter);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Load specific courses student
     private void loadSpecificStudents(String course) {
-        databaseReference
-                .child("student")
-                .orderByChild("course")
-                .equalTo(course)
-                .addValueEventListener(new ValueEventListener() {
-                    @SuppressLint("ClickableViewAccessibility")
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        studentDataList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            StudentDataModel studentDataModel = dataSnapshot.getValue(StudentDataModel.class);
+        databaseReference.child("student").orderByChild("course").equalTo(course).addValueEventListener(new ValueEventListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                studentDataList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    StudentDataModel studentDataModel = dataSnapshot.getValue(StudentDataModel.class);
 
-                            studentDataList.add(studentDataModel);
-                        }
-                        mainProgressBar.setVisibility(View.GONE);
-                        listMainActivity.setVisibility(View.VISIBLE);
+                    studentDataList.add(studentDataModel);
+                }
+                mainProgressBar.setVisibility(View.GONE);
+                listMainActivity.setVisibility(View.VISIBLE);
 
-                        CustomAdapter studentListAdapter = new CustomAdapter(MainActivity.this, studentDataList.size(), R.layout.item_list_student);
-                        studentListAdapter.setStudentDataModelList(studentDataList);
+                CustomAdapter studentListAdapter = new CustomAdapter(MainActivity.this, studentDataList.size(), R.layout.item_list_student);
+                studentListAdapter.setStudentDataModelList(studentDataList);
 
-                        listMainActivity.setAdapter(studentListAdapter);
-                    }
+                listMainActivity.setAdapter(studentListAdapter);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Load all courses student
     private void loadStudents() {
-        databaseReference
-                .child("student")
-                .addValueEventListener(new ValueEventListener() {
-                    @SuppressLint("ClickableViewAccessibility")
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        studentDataList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            StudentDataModel studentDataModel = dataSnapshot.getValue(StudentDataModel.class);
+        databaseReference.child("student").addValueEventListener(new ValueEventListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                studentDataList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    StudentDataModel studentDataModel = dataSnapshot.getValue(StudentDataModel.class);
 
-                            studentDataList.add(studentDataModel);
-                        }
-                        mainProgressBar.setVisibility(View.GONE);
-                        listMainActivity.setVisibility(View.VISIBLE);
+                    studentDataList.add(studentDataModel);
+                }
+                mainProgressBar.setVisibility(View.GONE);
+                listMainActivity.setVisibility(View.VISIBLE);
 
-                        CustomAdapter studentListAdapter = new CustomAdapter(MainActivity.this, studentDataList.size(), R.layout.item_list_student);
-                        studentListAdapter.setStudentDataModelList(studentDataList);
+                CustomAdapter studentListAdapter = new CustomAdapter(MainActivity.this, studentDataList.size(), R.layout.item_list_student);
+                studentListAdapter.setStudentDataModelList(studentDataList);
 
-                        listMainActivity.setAdapter(studentListAdapter);
-                    }
+                listMainActivity.setAdapter(studentListAdapter);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Load specific course teachers
     private void loadSpecificTeachers(String course) {
-        databaseReference
-                .child("Teacher")
-                .orderByChild("course")
-                .equalTo(course)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        teacherDataList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            TeacherDataModel teacherDataModel = dataSnapshot.getValue(TeacherDataModel.class);
+        databaseReference.child("Teacher").orderByChild("course").equalTo(course).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                teacherDataList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    TeacherDataModel teacherDataModel = dataSnapshot.getValue(TeacherDataModel.class);
 
-                            teacherDataList.add(teacherDataModel);
-                        }
-                        mainProgressBar.setVisibility(View.GONE);
-                        listMainActivity.setVisibility(View.VISIBLE);
+                    teacherDataList.add(teacherDataModel);
+                }
+                mainProgressBar.setVisibility(View.GONE);
+                listMainActivity.setVisibility(View.VISIBLE);
 
-                        CustomAdapter teacherListAdapter = new CustomAdapter(MainActivity.this, teacherDataList.size(), R.layout.item_list_teacher);
-                        teacherListAdapter.setTeacherDataModelList(teacherDataList);
+                CustomAdapter teacherListAdapter = new CustomAdapter(MainActivity.this, teacherDataList.size(), R.layout.item_list_teacher);
+                teacherListAdapter.setTeacherDataModelList(teacherDataList);
 
-                        listMainActivity.setAdapter(teacherListAdapter);
-                    }
+                listMainActivity.setAdapter(teacherListAdapter);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Load all teachers
@@ -363,86 +347,78 @@ public class MainActivity extends AppCompatActivity {
 
     // Load course list with (all) value
     private void loadCourseList(ListView listView) {
-        databaseReference
-                .child("courseList")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        courseListData.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            courseListData.add(dataSnapshot.getValue(CourseDataModel.class));
-                        }
-                        dialogProgressBar.setVisibility(View.GONE);
+        databaseReference.child("courseList").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                courseListData.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    courseListData.add(dataSnapshot.getValue(CourseDataModel.class));
+                }
+                dialogProgressBar.setVisibility(View.GONE);
 
-                        CustomAdapter courseListAdapter = new CustomAdapter(MainActivity.this, courseListData.size(), R.layout.list_item_course);
-                        courseListAdapter.setCourseList(courseListData);
-                        listView.setAdapter(courseListAdapter);
-                    }
+                CustomAdapter courseListAdapter = new CustomAdapter(MainActivity.this, courseListData.size(), R.layout.list_item_course);
+                courseListAdapter.setCourseList(courseListData);
+                listView.setAdapter(courseListAdapter);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Load all exam
     private void loadExamSet() {
-        databaseReference
-                .child("examSet")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        examDataList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            ExamDataModel examDataModel = dataSnapshot.getValue(ExamDataModel.class);
-                            examDataList.add(examDataModel);
-                        }
+        databaseReference.child("examSet").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                examDataList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    ExamDataModel examDataModel = dataSnapshot.getValue(ExamDataModel.class);
+                    examDataList.add(examDataModel);
+                }
 
-                        mainProgressBar.setVisibility(View.GONE);
-                        listMainActivity.setVisibility(View.VISIBLE);
+                mainProgressBar.setVisibility(View.GONE);
+                listMainActivity.setVisibility(View.VISIBLE);
 
-                        CustomAdapter examListAdapter = new CustomAdapter(MainActivity.this, examDataList.size(), R.layout.list_item_exam);
-                        examListAdapter.setExamDataModelList(examDataList);
+                CustomAdapter examListAdapter = new CustomAdapter(MainActivity.this, examDataList.size(), R.layout.list_item_exam);
+                examListAdapter.setExamDataModelList(examDataList);
 
-                        listMainActivity.setAdapter(examListAdapter);
-                    }
+                listMainActivity.setAdapter(examListAdapter);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Load specific exam
     private void loadSpecificExamSet(String course) {
-        databaseReference
-                .child("examSet")
-                .orderByChild("course")
-                .equalTo(course)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        examDataList.clear();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            ExamDataModel examDataModel = dataSnapshot.getValue(ExamDataModel.class);
-                            examDataList.add(examDataModel);
-                        }
-                        mainProgressBar.setVisibility(View.GONE);
-                        listMainActivity.setVisibility(View.VISIBLE);
+        databaseReference.child("examSet").orderByChild("course").equalTo(course).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                examDataList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    ExamDataModel examDataModel = dataSnapshot.getValue(ExamDataModel.class);
+                    examDataList.add(examDataModel);
+                }
+                mainProgressBar.setVisibility(View.GONE);
+                listMainActivity.setVisibility(View.VISIBLE);
 
-                        CustomAdapter examListAdapter = new CustomAdapter(MainActivity.this, examDataList.size(), R.layout.list_item_exam);
-                        examListAdapter.setExamDataModelList(examDataList);
+                CustomAdapter examListAdapter = new CustomAdapter(MainActivity.this, examDataList.size(), R.layout.list_item_exam);
+                examListAdapter.setExamDataModelList(examDataList);
 
-                        listMainActivity.setAdapter(examListAdapter);
-                    }
+                listMainActivity.setAdapter(examListAdapter);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
